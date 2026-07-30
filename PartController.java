@@ -2,33 +2,36 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Part;
 import com.example.demo.repository.PartRepository;
-import com.example.demo.repository.BomLinkRepository; // Added cleanly at the top
+import com.example.demo.repository.BomLinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*") // Allows your browser UI to communicate freely
+@CrossOrigin(origins = "*")
 public class PartController {
 
     @Autowired
     private PartRepository partRepository;
 
     @Autowired
-    private BomLinkRepository bomLinkRepository; // Added safely here
+    private BomLinkRepository bomLinkRepository;
 
-     @GetMapping("/parts")
+    // 1. Fetch all items
+    @GetMapping("/parts")
     public List<Part> getAllParts() {
-        return partRepository.findAll();
+        return partRepository.findAllByOrderByIdAsc(); // Sorts cleanly by ID
     }
 
-     @PostMapping("/parts")
+    // 2. Accept and write new items from frontend
+    @PostMapping("/parts")
     public Part savePart(@RequestBody Part part) {
         return partRepository.save(part);
     }
 
-     @PutMapping("/parts/{id}")
+    // 3. Update an existing item
+    @PutMapping("/parts/{id}")
     public Part updatePart(@PathVariable Long id, @RequestBody Part partDetails) {
         Part part = partRepository.findById(id).orElse(null);
         if (part != null) {
@@ -40,18 +43,19 @@ public class PartController {
         return null;
     }
     
-     @DeleteMapping("/parts/{id}")
+    // 4. Safe Cascade Delete: Clears associated BOM links first
+    @DeleteMapping("/parts/{id}")
     public void deletePart(@PathVariable Long id) {
-        // First, wipe out its relationships so MySQL doesn't throw a foreign key error
         bomLinkRepository.deleteByParentItemId(id);
         bomLinkRepository.deleteByChildItemId(id);
-        
-         partRepository.deleteById(id);
+        partRepository.deleteById(id);
     }
     
-     @PostMapping("/parts/reset")
+    // 5. Reset database utility safely
+    @PostMapping("/parts/reset")
     public String resetDatabase() {
-        partRepository.deleteAll(); // Clears out the part table rows cleanly
+        bomLinkRepository.deleteAll(); // Clear relational links first
+        partRepository.deleteAll();   // Clear main part records
         return "{\"status\":\"Database cleared successfully\"}";
     }
 }
