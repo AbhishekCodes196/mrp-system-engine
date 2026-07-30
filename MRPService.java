@@ -16,11 +16,14 @@ public class MRPService {
     public BomNode getBomTree(Long id, Double qty) {
         BomNode node = new BomNode(id, qty);
         
-         List<BomLink> children = bomLinkRepository.findByParentItemId(id);
+        List<BomLink> children = bomLinkRepository.findByParentItemId(id);
         for (BomLink link : children) {
-         	Long childId = link.getChildItemId();
-        	Double childQty = Double.valueOf(link.getQuantityRequired());
-            node.children.add(getBomTree(childId, childQty));
+            Long childId = link.getChildItemId();
+            Integer reqQty = link.getQuantityRequired();
+            Double childQty = (reqQty != null) ? Double.valueOf(reqQty) : 1.0;
+            
+            // Recursive BOM tree explosion logic
+            node.children.add(getBomTree(childId, childQty * qty));
         }
         return node;
     }
