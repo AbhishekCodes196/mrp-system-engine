@@ -19,14 +19,17 @@ public class Product {
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
-     public Product() {}
+    // 1. THIS IS REQUIRED: A public empty constructor
+    public Product() {}
 
-     public Integer getId() { return id; }
+    // 2. These Getters allow Spring to "read" your data
+    public Integer getId() { return id; }
     public String getItemName() { return itemName; }
     public String getItemType() { return itemType; }
     public Integer getStockQuantity() { return stockQuantity; }
 
-     public void setId(Integer id) { this.id = id; }
+    // 3. These Setters allow Spring to "fill" your data
+    public void setId(Integer id) { this.id = id; }
     public void setItemName(String itemName) { this.itemName = itemName; }
     public void setItemType(String itemType) { this.itemType = itemType; }
     public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
