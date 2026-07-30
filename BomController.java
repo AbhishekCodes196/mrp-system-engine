@@ -12,12 +12,14 @@ public class BomController {
     @Autowired
     private BomLinkRepository bomLinkRepository;
 
-     @PostMapping("/bom/add")
+    // Receives parent and child links from the dashboard UI and writes them to the DB
+    @PostMapping("/bom/add")
     public BomLink addBomLink(@RequestBody BomLink bomLink) {
         return bomLinkRepository.save(bomLink);
     }
     
-     @GetMapping("/bom-links")
+    // NEW FEATURE: Fetch all active parent-component relationships for the UI grid
+    @GetMapping("/bom-links")
     public java.util.List<com.example.demo.model.BomLink> getAllBomLinks() {
         return bomLinkRepository.findAll();
     }
