@@ -15,7 +15,8 @@ public class BomLink {
     private Long childItemId;
     private Integer quantityRequired;
 
-     public Long getId() { return id; }
+    // Getters and Setters
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Long getParentItemId() { return parentItemId; }
