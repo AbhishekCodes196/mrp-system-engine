@@ -2,315 +2,240 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MRP Engine Dashboard</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise MRP Engine - Manufacturing Console</title>
     <style>
-         body {
-            background-image: url('bg.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 40px 20px;
-            color: #0f172a;
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-warn: #f59e0b;
+            --accent-danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
         }
 
-         .card, table {
-            max-width: 1200px;
-            width: 100%;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            box-sizing: border-box;
-            background: rgba(255, 255, 255, 0.82) !important; 
-            backdrop-filter: blur(14px) saturate(120%);
-            -webkit-backdrop-filter: blur(14px) saturate(120%);
-            border: 1px solid rgba(255, 255, 255, 0.45) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08) !important;
-            padding: 25px !important;
-            margin-bottom: 24px !important;
+        h1 { font-size: 1.8rem; font-weight: 700; color: #60a5fa; }
+        p.subtitle { color: var(--text-muted); font-size: 0.9rem; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-         .mrp-panel {
-            background: rgba(240, 253, 244, 0.85) !important;
-            border-left: 6px solid #16a34a !important;
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-         h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: #ffffff !important;
-            text-shadow: 0 4px 12px rgba(15, 23, 42, 0.4) !important;
-            letter-spacing: -0.03em;
-            margin-bottom: 35px;
-            max-width: 1200px;
-            width: 100%;
-            text-align: left;
-        }
+        .card-full { grid-column: span 2; }
 
-        h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-top: 0;
-            margin-bottom: 18px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+        h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #93c5fd; display: flex; align-items: center; gap: 8px; }
 
-        /* 4. FORM AND ROW ALIGNMENT FLUIDITY */
-        .form-row {
+        .form-group {
             display: flex;
-            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
-            gap: 12px;
-        }
-        
-        .form-row label {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #334155;
         }
 
-         input, select {
-            background: rgba(255, 255, 255, 0.95) !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-            padding: 10px 14px !important;
-            font-size: 0.95rem;
-            color: #334155;
-            outline: none;
-            transition: all 0.2s ease;
-            min-height: 42px;
-            box-sizing: border-box;
-        }
-
-        input:focus, select:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-            background: #ffffff !important;
-        }
-
-         button {
-            padding: 10px 22px !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            border: none !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            min-height: 42px;
-            background: #64748b; /* Sleek Slate default button */
+        input, select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
             color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 140px;
         }
 
-        button:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.08);
-            box-shadow: 0 6px 15px -1px rgba(0, 0, 0, 0.15);
-        }
+        input:focus, select:focus { outline: 1px solid #60a5fa; }
 
-         .btn-primary { background: #2563eb !important; color: white !important; }
-        .btn-success { background: #16a34a !important; color: white !important; }
-        .btn-danger { background: #dc2626 !important; color: white !important; }
-        .btn-info { background: #17a2b8 !important; color: white !important; }
-
-         table {
-            border-collapse: separate !important;
-            border-spacing: 0 !important;
-            overflow: hidden;
-            padding: 0 !important; 
-        }
-
-        th {
-            background-color: rgba(241, 245, 249, 0.9) !important;
-            color: #475569 !important;
+        button {
+            padding: 8px 16px;
+            font-size: 0.9rem;
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-            padding: 16px 20px !important;
-            border-bottom: 2px solid #e2e8f0 !important;
-            text-align: left;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        td {
-            padding: 16px 20px !important;
-            border-bottom: 1px solid #e2e8f0 !important;
-            font-size: 0.95rem;
-            color: #334155;
-            background: transparent;
-        }
+        .btn-primary { background: var(--accent-blue); }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: var(--accent-green); }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: var(--accent-danger); }
+        .btn-danger:hover { background: #dc2626; }
 
-        tr:last-child td {
-            border-bottom: none !important;
-        }
-
-        tr:nth-child(even) td {
-            background-color: rgba(255, 255, 255, 0.25);
-        }
-
-         tr[style*="background-color: #fff3cd"] {
-            background-color: rgba(254, 243, 199, 0.75) !important;
-        }
-        tr[style*="background-color: #fff3cd"] td {
-            color: #92400e !important;
-            font-weight: 500;
-        }
-        
-        .table-header-row {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            max-width: 1200px; 
+        table {
             width: 100%;
-            margin: 15px auto 5px auto;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
         }
-        .table-header-row h3 { margin: 0; }
 
-         @media print {
-             body {
-                background: white !important;
-                padding: 0 !important;
-            }
-             body *, .card, button, select, input {
-                visibility: hidden;
-            }
-             #mrpPrintHeader, #mrpPrintHeader *, #mrpResultsTable, #mrpResultsTable * {
-                visibility: visible;
-            }
-            #mrpPrintHeader {
-                position: absolute;
-                left: 0;
-                top: 10px;
-                width: 100%;
-            }
-            #mrpResultsTable {
-                position: absolute;
-                left: 0;
-                top: 60px;
-                width: 100%;
-                color: #000000 !important;
-                background: #ffffff !important;
-                border: 1px solid #cbd5e1 !important;
-            }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th { background: rgba(15, 23, 42, 0.6); color: var(--text-muted); font-weight: 600; }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-warn);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-ok {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tree-view {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px dashed var(--border-color);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
 
-    <h1>MRP Engine Dashboard</h1>
-
-    <div class="card">
-        <h3>Add/Update Part</h3>
-        <div class="form-row">
-            <input type="hidden" id="partId">
-            <input type="text" id="partName" placeholder="Part Name" style="flex: 2; min-width: 200px;">
-            <input type="number" id="stock" placeholder="Stock Level" style="flex: 1; min-width: 120px;">
-            <input type="number" id="leadTime" placeholder="Lead Time (Days)" style="flex: 1; min-width: 140px;">
-            <button class="btn-primary" onclick="savePart()">Save Part</button>
+    <header>
+        <div>
+            <h1>⚙️ Enterprise Material Requirements Planning (MRP) Engine</h1>
+            <p class="subtitle">Multi-Level Bill of Materials (BOM) Explosion & Automated Net Purchasing Demand Calculator</p>
         </div>
-    </div>
+        <button onclick="resetDatabase()" class="btn-danger">↺ Reset System Data</button>
+    </header>
 
-    <div class="card">
-        <h3>BOM Link Manager</h3>
-        <div class="form-row">
-            <select id="parentPart" style="flex: 2; min-width: 180px;">
-                <option value="">Select Parent...</option>
-            </select>
-            <select id="childPart" style="flex: 2; min-width: 180px;">
-                <option value="">Select Component...</option>
-            </select>
-            <input type="number" id="bomQuantity" placeholder="Quantity" style="flex: 1; min-width: 100px;">
-            <button class="btn-primary" onclick="saveBomLink()">Link Parts</button>
+    <div class="grid-container">
+
+        <!-- 1. ITEM & INVENTORY CATALOG MODULE -->
+        <div class="card">
+            <h2>📦 Item Catalog & On-Hand Inventory</h2>
+            <div class="form-group">
+                <input type="hidden" id="partId">
+                <input type="text" id="partName" placeholder="Item Name (e.g. Bicycle, Wheel)">
+                <input type="number" id="stock" placeholder="On-Hand Stock">
+                <input type="number" id="leadTime" placeholder="Lead Time (Days)">
+                <button onclick="savePart()" class="btn-primary">Save Item</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item Name</th>
+                        <th>Stock</th>
+                        <th>Lead Time</th>
+                        <th style="text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="partTableBody"></tbody>
+            </table>
         </div>
-    </div>
 
-    <div class="card mrp-panel">
-        <h3>Execute MRP Logic</h3>
-        <div class="form-row">
-            <label for="mrpTargetPart">Select Target Product:</label>
-            <select id="mrpTargetPart" style="min-width: 200px;"></select>
-            
-            <label for="mrpQuantity">Quantity Demanded:</label>
-            <input type="number" id="mrpQuantity" placeholder="e.g. 10" style="width: 120px;">
-            
-            <button class="btn-success" onclick="calculateMRP()">Run Calculation</button>
-            <button class="btn-info" onclick="window.print()">🖨️ Print Report</button>
+        <!-- 2. BILL OF MATERIALS (BOM) LINKER -->
+        <div class="card">
+            <h2>🔗 Bill of Materials (BOM) Hierarchy Linker</h2>
+            <div class="form-group">
+                <select id="parentPart"><option value="">Select Parent Assembly...</option></select>
+                <select id="childPart"><option value="">Select Sub-Component...</option></select>
+                <input type="number" id="bomQuantity" placeholder="Qty Required">
+                <button onclick="saveBomLink()" class="btn-success">Connect Link</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Link ID</th>
+                        <th>Parent Item ID</th>
+                        <th>Child Component ID</th>
+                        <th>Qty Per Parent</th>
+                    </tr>
+                </thead>
+                <tbody id="bomLinksTableBody"></tbody>
+            </table>
         </div>
-    </div>
 
-    <div class="table-header-row" id="mrpPrintHeader">
-        <h3>MRP Results / Material Schedule</h3>
-    </div>
-    <table id="mrpResultsTable">
-        <thead>
-            <tr>
-                <th>Part ID</th>
-                <th>Part Name</th>
-                <th>Gross Requirement</th>
-                <th>Current Stock</th>
-                <th>Net Requirement</th>
-                <th>Lead Time (Days)</th>
-                <th>Action Plan</th>
-            </tr>
-        </thead>
-        <tbody id="mrpResultsBody">
-            <tr>
-                <td colspan="7" style="text-align: center; color: #64748b; font-style: italic; padding: 30px !important;">
-                    No calculation run yet. Select a product and quantity above.
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- 3. MRP CALCULATION & NET PURCHASING REQUIREMENT ENGINE -->
+        <div class="card card-full">
+            <h2>📊 Run MRP Explosion & Net Purchasing Calculation</h2>
+            <div class="form-group" style="max-width: 600px;">
+                <select id="mrpTargetPart"><option value="">Select Target Finished Good...</option></select>
+                <input type="number" id="mrpQuantity" placeholder="Target Order Quantity">
+                <button onclick="calculateMRP()" class="btn-primary" style="padding: 8px 24px;">Execute MRP Calculation</button>
+            </div>
 
-    <div class="table-header-row" style="margin-top: 25px;">
-        <h3>🔗 Active Assembly Relationships (BOM Links)</h3>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Link ID</th>
-                <th>Parent Part ID (Assembly)</th>
-                <th>Component Part ID (Ingredient)</th>
-                <th>Quantity Required</th>
-            </tr>
-        </thead>
-        <tbody id="bomLinksTableBody">
-            <tr>
-                <td colspan="4" style="text-align: center; color: #64748b; font-style: italic; padding: 20px !important;">
-                    No active relationships mapped yet.
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="table-header-row" style="margin-top: 25px;">
-        <h3>All Parts in System</h3>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="loadParts()">Refresh Part List</button>
-            <button class="btn-danger" onclick="resetDatabase()">Reset Database</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Component Name</th>
+                        <th>Gross Requirement</th>
+                        <th>On-Hand Stock</th>
+                        <th>Net Purchasing Requirement</th>
+                        <th>Lead Time</th>
+                        <th>Procurement Status</th>
+                    </tr>
+                </thead>
+                <tbody id="mrpResultsBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
+                            No calculation run yet. Select a finished product and order quantity above.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Stock</th>
-                <th>Lead Time</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="partTableBody"></tbody>
-    </table>
 
-    <script src="script.js"></script>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
