@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.BomLink;
+import com.example.demo.model.MrpResult;
 import com.example.demo.model.Part;
 import com.example.demo.repository.BomLinkRepository;
 import com.example.demo.repository.PartRepository;
@@ -24,18 +25,23 @@ public class MrpController {
     public List<MrpResult> calculateMRP(@RequestParam Long partId, @RequestParam Integer quantity) {
         List<MrpResult> results = new ArrayList<>();
 
-         List<BomLink> links = bomLinkRepository.findByParentItemId(partId);
+        // 1. Look up all component connections linked to this parent product ID
+        List<BomLink> links = bomLinkRepository.findByParentItemId(partId);
 
-         for (BomLink link : links) {
+        // 2. Loop through each component to calculate material requirements
+        for (BomLink link : links) {
             Part component = partRepository.findById(link.getChildItemId()).orElse(null);
             
             if (component != null) {
-                 int grossRequirement = quantity * link.getQuantityRequired();
+                // Gross = Production demand quantity * quantity needed per parent unit
+                int grossRequirement = quantity * link.getQuantityRequired();
                 
-                 int netRequirement = grossRequirement - component.getCurrentStock();
-                if (netRequirement < 0) netRequirement = 0; // No negative shortages allowed
+                // Net = Gross requirement minus current stock
+                int netRequirement = grossRequirement - component.getCurrentStock();
+                if (netRequirement < 0) netRequirement = 0; // No negative shortages
 
-                 MrpResult result = new MrpResult(
+                // Uses external com.example.demo.model.MrpResult
+                MrpResult result = new MrpResult(
                     component.getId(),
                     component.getPartName(),
                     grossRequirement,
@@ -47,23 +53,5 @@ public class MrpController {
             }
         }
         return results;
-    }
-
-     public static class MrpResult {
-        public Long id;
-        public String partName;
-        public int grossRequirement;
-        public int currentStock;
-        public int netRequirement;
-        public int leadTimeDays;
-
-        public MrpResult(Long id, String partName, int grossRequirement, int currentStock, int netRequirement, int leadTimeDays) {
-            this.id = id;
-            this.partName = partName;
-            this.grossRequirement = grossRequirement;
-            this.currentStock = currentStock;
-            this.netRequirement = netRequirement;
-            this.leadTimeDays = leadTimeDays;
-        }
     }
 }
